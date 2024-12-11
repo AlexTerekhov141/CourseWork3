@@ -2,7 +2,8 @@
 
 
 ## measuring objects in pixels
-![image](https://github.com/user-attachments/assets/31ea9f16-c219-4c94-b33f-c86d1b8e6acc)
+![image](https://github.com/user-attachments/assets/c1cc5f76-ebaa-42bd-bdea-ce0b96bd77e0)
+
 
 ## measuring objects in real size
 Coming soon...
