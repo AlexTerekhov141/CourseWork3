@@ -156,30 +156,6 @@ class MainActivity : CameraActivity(), CvCameraViewListener2 {
 
     override fun onCameraViewStopped() {}
 
-    private fun loadFileFromResource(id: Int): MatOfByte? {
-        val buffer: ByteArray
-        try {
-
-            val `is` = resources.openRawResource(id)
-
-            val size = `is`.available()
-            buffer = ByteArray(size)
-            val bytesRead = `is`.read(buffer)
-            `is`.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e(
-                TAG,
-                "Failed to ONNX model from resources! Exception thrown: $e"
-            )
-            Toast.makeText(this, "Failed to ONNX model from resources!", Toast.LENGTH_LONG)
-                .show()
-            return null
-        }
-
-        return MatOfByte(*buffer)
-    }
-
     private var mConfigBuffer: MatOfByte? = null
     private var mModelBuffer: MatOfByte? = null
     private var net: Net? = null
