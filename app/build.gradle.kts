@@ -8,7 +8,9 @@ plugins {
 android {
     namespace = "com.packt.myapplication"
     compileSdk = 35
-
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "com.packt.myapplication"
         minSdk = 24

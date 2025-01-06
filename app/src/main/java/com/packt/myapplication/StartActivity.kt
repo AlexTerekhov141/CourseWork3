@@ -17,6 +17,7 @@ class StartActivity : AppCompatActivity() {
         val logoImage = findViewById<ImageView>(R.id.logoImage)
         val startButton = findViewById<Button>(R.id.startButton)
         val opencvButton = findViewById<Button>(R.id.startButtonOpencv)
+        val viewPhotosButton = findViewById<Button>(R.id.viewPhotosButton)
 
         logoImage.alpha = 0f
         logoImage.animate().alpha(1f).setDuration(1500).start()
@@ -28,6 +29,9 @@ class StartActivity : AppCompatActivity() {
         opencvButton.alpha = 0f
         opencvButton.animate().alpha(1f).setDuration(2000).start()
 
+        viewPhotosButton.alpha = 0f
+        viewPhotosButton.animate().alpha(1f).setDuration(2000).start()
+
         startButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -37,7 +41,7 @@ class StartActivity : AppCompatActivity() {
             val intent = Intent(this, OpenCVAcitivity::class.java)
             startActivity(intent)
         }
-        val viewPhotosButton = findViewById<Button>(R.id.viewPhotosButton)
+
 
         viewPhotosButton.setOnClickListener {
             val intent = Intent(this, PhotoGalleryActivity::class.java)
