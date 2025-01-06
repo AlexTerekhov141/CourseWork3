@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="logo_description">ArMeasure</string>
+    <string name="Clear">Clear</string>
+    <string name="Photo">Photo</string>
+    <string name="Helptext">Click the button below to start scanning.</string>
+    <string name="HelpButton">Start scanning</string>
+    <string name="OpencvButton">Opencv</string>
+    <string name="GalleryButton">Gallery</string>
+</resources>

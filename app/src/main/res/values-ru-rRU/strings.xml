@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="logo_description">ArMeasure</string>
+    <string name="Clear">Сбросить точки</string>
+    <string name="Photo">Фото</string>
+    <string name="Helptext">Нажмите кнопку ниже, чтобы начать сканирование.</string>
+    <string name="HelpButton">Начать сканирование</string>
+    <string name="OpencvButton">Opencv</string>
+    <string name="GalleryButton">Галлерея</string>
+</resources>
