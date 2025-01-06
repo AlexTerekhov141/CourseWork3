@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
+import com.packt.myapplication.BuildConfig
 
 class PhotoGalleryActivity : AppCompatActivity() {
 
@@ -41,9 +42,23 @@ class PhotoGalleryActivity : AppCompatActivity() {
     }
 
     private fun openPhoto(photo: File) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(Uri.fromFile(photo), "image/*")
-        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        startActivity(intent)
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            this,
+            "${BuildConfig.APPLICATION_ID}.fileprovider",
+            photo
+        )
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "image/*")
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Не удалось открыть фото", Toast.LENGTH_SHORT).show()
+            Log.e("PhotoGallery", "Ошибка открытия фото: ${e.message}")
+        }
     }
+
 }
