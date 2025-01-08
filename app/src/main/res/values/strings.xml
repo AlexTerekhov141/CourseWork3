@@ -7,4 +7,15 @@
     <string name="HelpButton">Start scanning</string>
     <string name="OpencvButton">Opencv</string>
     <string name="GalleryButton">Gallery</string>
+
+    <string name="ChoosePlate">Select vertical or horizontal plane.</string>
+    <string name="DotsDrop">The points have been reset.</string>
+    <string name="WelcomeHint">Welcome!</string>
+    <string name="PlateHint">For a better display of the plane, press the screen and move the phone in different positions.</string>
+    <string name="DotsDropHint">Reset points</string>
+    <string name="DotsDropHintText">Press this button to reset all dots on the screen.</string>
+    <string name="TakePhoto">Photo</string>
+    <string name="TakePhotoHintText">This button allows you to take a photo of the current measurements.</string>
+    <string name="Distance">Distance</string>
+    <string name="NoSavedPhotos">There are no saved photos.</string>
 </resources>

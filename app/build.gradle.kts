@@ -52,6 +52,7 @@ dependencies {
     implementation("com.google.ar:core:1.33.0")
     implementation("com.google.ar.sceneform.ux:sceneform-ux:1.17.1")
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("uk.co.samuelwall:material-tap-target-prompt:3.3.2")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation(project(":opencv"))
 }

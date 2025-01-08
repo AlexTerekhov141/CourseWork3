@@ -1,11 +1,14 @@
 package com.packt.myapplication
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.PixelCopy
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -24,7 +27,8 @@ import com.google.ar.sceneform.ux.ArFragment
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import android.graphics.Color as androidColor
 class MainActivity : AppCompatActivity() {
 
     private lateinit var arFragment: ArFragment
@@ -41,22 +45,76 @@ class MainActivity : AppCompatActivity() {
         resetButton = findViewById(R.id.resetButton)
         captureButton = findViewById(R.id.captureButton)
 
+        showFullScreenHint()
+
+
         arFragment.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent ->
             if (plane.type == Plane.Type.VERTICAL || plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
                 handleTap(hitResult)
             } else {
-                Toast.makeText(this, "Выберите вертикальную или горизонтальную плоскость.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.ChoosePlate, Toast.LENGTH_SHORT).show()
             }
         }
 
 
         resetButton.setOnClickListener {
             clearAnchors()
-            Toast.makeText(this, "Точки сброшены.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.DotsDrop, Toast.LENGTH_SHORT).show()
         }
         captureButton.setOnClickListener {
             captureScreenshot()
         }
+    }
+    private fun isOnboardingShown(): Boolean {
+        val sharedPrefs = getSharedPreferences("onboarding_prefs", MODE_PRIVATE)
+        return sharedPrefs.getBoolean("onboarding_shown", false)
+    }
+
+    private fun setOnboardingShown() {
+        val sharedPrefs = getSharedPreferences("onboarding_prefs", MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("onboarding_shown", true).apply()
+    }
+    private fun showFullScreenHint() {
+        val rootView = findViewById<View>(R.id.arFragment) // Ваш корневой макет
+        MaterialTapTargetPrompt.Builder(this)
+            .setTarget(rootView)
+            .setPrimaryText(R.string.WelcomeHint)
+            .setSecondaryText(R.string.PlateHint)
+            .setBackgroundColour(androidColor.parseColor("#80000000")) // Полупрозрачный фон
+            .setPromptStateChangeListener { _, state ->
+                if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    showFirstPrompt(resetButton, captureButton)
+                }
+            }
+            .show()
+    }
+
+
+    private fun showFirstPrompt(resetButton: Button, scanButton: Button) {
+        MaterialTapTargetPrompt.Builder(this)
+            .setTarget(resetButton)
+            .setPrimaryText(R.string.DotsDropHint)
+            .setSecondaryText(R.string.DotsDropHintText)
+            .setBackgroundColour(androidColor.parseColor("#80000000"))
+            .setPromptStateChangeListener { _, state ->
+                if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    showSecondPrompt(scanButton)
+                }
+            }
+            .show()
+    }
+    private fun showSecondPrompt(scanButton: Button) {
+        MaterialTapTargetPrompt.Builder(this)
+            .setTarget(scanButton)
+            .setPrimaryText(R.string.TakePhoto)
+            .setSecondaryText(R.string.TakePhotoHintText)
+            .setBackgroundColour(androidColor.parseColor("#80000000"))
+            .setPromptStateChangeListener { _, state ->
+                if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    setOnboardingShown()
+                }
+            }
+            .show()
     }
 
     private fun handleTap(hitResult: HitResult) {
@@ -70,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             val lastIndex = anchors.size - 1
             val distance = calculateDistance(anchors[lastIndex - 1], anchors[lastIndex])
             val midPoint = calculateMidPoint(anchors[lastIndex - 1], anchors[lastIndex])
-            Toast.makeText(this, "Расстояние: ${"%.2f".format(distance)} м", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Distance: ${"%.2f".format(distance)} м", Toast.LENGTH_SHORT).show()
             showDistanceText(midPoint, distance)
         }
     }
@@ -82,13 +140,10 @@ class MainActivity : AppCompatActivity() {
                 val textNode = AnchorNode()
                 textNode.worldPosition = position
 
-
                 val textView = renderable.view.findViewById<TextView>(R.id.distanceTextView)
                 textView.text = "${"%.2f".format(distance)} м"
 
-
                 textNode.renderable = renderable
-                textNode.localScale = Vector3(0.1f, 0.1f, 0.1f)
 
 
                 arFragment.arSceneView.scene.addChild(textNode)
@@ -97,6 +152,15 @@ class MainActivity : AppCompatActivity() {
                 arFragment.arSceneView.scene.addOnUpdateListener {
                     val cameraPosition = arFragment.arSceneView.scene.camera.worldPosition
                     val directionToCamera = Vector3.subtract(cameraPosition, textNode.worldPosition).normalized()
+
+
+                    val distanceToCamera = Vector3.subtract(textNode.worldPosition, cameraPosition).length()
+
+
+                    val scaleFactor = distanceToCamera / 2.0f
+                    textNode.localScale = Vector3(scaleFactor, scaleFactor, scaleFactor)
+
+
                     textNode.worldRotation = Quaternion.lookRotation(directionToCamera, Vector3.up())
                 }
             }
@@ -105,6 +169,7 @@ class MainActivity : AppCompatActivity() {
                 null
             }
     }
+
 
 
     private fun addMarker(anchor: Anchor) {

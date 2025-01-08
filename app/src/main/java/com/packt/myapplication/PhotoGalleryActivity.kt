@@ -28,7 +28,7 @@ class PhotoGalleryActivity : AppCompatActivity() {
             }
             recyclerView.adapter = adapter
         } else {
-            Toast.makeText(this, "Нет сохранённых фото.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.NoSavedPhotos, Toast.LENGTH_SHORT).show()
         }
     }
 
