@@ -1,10 +1,10 @@
 # Coursework3
 
 ## Technologies
-1.ARCore
-2.Glide(для изображений)
-3.Material Tap Target Prompt(для интерактивных подсказок)
-4.OpenCV
+1. ARCore
+2. Glide(для изображений)
+3. Material Tap Target Prompt(для интерактивных подсказок)
+4. OpenCV
 
 ## StartActivity
 ![img_3.png](images/img_3.png)
