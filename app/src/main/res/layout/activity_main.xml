@@ -1,0 +1,46 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <fragment
+        android:id="@+id/arFragment"
+        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:elevation="8dp">
+
+
+        <Button
+            android:id="@+id/resetButton"
+            style="@style/ActionButtonStyle"
+            android:layout_weight="1"
+            android:text="@string/Clear" />
+
+
+        <Button
+            android:id="@+id/clearLastButton"
+            style="@style/ActionButtonStyle"
+            android:layout_weight="1"
+            android:text="@string/DeleteOneDot"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/captureButton"
+            style="@style/ActionButtonStyle"
+            android:layout_weight="1"
+            android:text="@string/Photo" />
+    </LinearLayout>
+</RelativeLayout>

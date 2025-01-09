@@ -1,0 +1,19 @@
+@echo off
+"C:\\Users\\Tereh\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\cmake.exe" ^
+  "-HC:\\Users\\Tereh\\AndroidStudioProjects\\MyApplication3\\opencv\\libcxx_helper" ^
+  "-DCMAKE_SYSTEM_NAME=Android" ^
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" ^
+  "-DCMAKE_SYSTEM_VERSION=21" ^
+  "-DANDROID_PLATFORM=android-21" ^
+  "-DANDROID_ABI=x86_64" ^
+  "-DCMAKE_ANDROID_ARCH_ABI=x86_64" ^
+  "-DANDROID_NDK=C:\\Users\\Tereh\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973" ^
+  "-DCMAKE_ANDROID_NDK=C:\\Users\\Tereh\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973" ^
+  "-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\Tereh\\AppData\\Local\\Android\\Sdk\\ndk\\27.0.12077973\\build\\cmake\\android.toolchain.cmake" ^
+  "-DCMAKE_MAKE_PROGRAM=C:\\Users\\Tereh\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe" ^
+  "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\\Users\\Tereh\\AndroidStudioProjects\\MyApplication3\\opencv\\build\\intermediates\\cxx\\RelWithDebInfo\\5a2l6i1m\\obj\\x86_64" ^
+  "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=C:\\Users\\Tereh\\AndroidStudioProjects\\MyApplication3\\opencv\\build\\intermediates\\cxx\\RelWithDebInfo\\5a2l6i1m\\obj\\x86_64" ^
+  "-DCMAKE_BUILD_TYPE=RelWithDebInfo" ^
+  "-BC:\\Users\\Tereh\\AndroidStudioProjects\\MyApplication3\\opencv\\.cxx\\RelWithDebInfo\\5a2l6i1m\\x86_64" ^
+  -GNinja ^
+  "-DANDROID_STL=c++_shared"

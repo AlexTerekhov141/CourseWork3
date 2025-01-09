@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="logo_description">ArMeasure</string>
+    <string name="Clear">Сбросить точки</string>
+    <string name="Photo">Фото</string>
+    <string name="Helptext">Нажмите кнопку ниже, чтобы начать сканирование.</string>
+    <string name="HelpButton">Начать сканирование</string>
+    <string name="OpencvButton">Opencv</string>
+    <string name="GalleryButton">Галлерея</string>
+    <string name="ChoosePlate">Выберите вертикальную или горизонтальную плоскость.</string>
+    <string name="DotsDrop">Точки сброшены.</string>
+    <string name="WelcomeHint">Добро пожаловать!</string>
+    <string name="PlateHint">Для лучшего отображения плоскости нажимайте на экран и водите телефон в разных положениях</string>
+    <string name="DotsDropHint">Сброс точек</string>
+    <string name="DotsDropHintText">Нажмите эту кнопку, чтобы сбросить все точки на экране.</string>
+    <string name="TakePhoto">Сделать фото</string>
+    <string name="TakePhotoHintText">Эта кнопка позволяет сделать фото текущих измерений.</string>
+    <string name="Distance">Расстояние</string>
+    <string name="NoSavedPhotos">Нет сохранённых фото.</string>
+    <string name="DeleteOneDot">Удалить точку</string>
+</resources>
