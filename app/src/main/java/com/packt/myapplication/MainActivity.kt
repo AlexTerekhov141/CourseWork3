@@ -2,6 +2,7 @@ package com.packt.myapplication
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.graphics.Color as androidColor
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -21,6 +22,7 @@ import com.google.ar.sceneform.rendering.MaterialFactory
 import com.google.ar.sceneform.rendering.ShapeFactory
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -50,13 +52,13 @@ class MainActivity : AppCompatActivity() {
             if (plane.type == Plane.Type.VERTICAL || plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
                 handleTap(hitResult)
             } else {
-                Toast.makeText(this, "Выберите вертикальную или горизонтальную плоскость.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ChoosePlateToast), Toast.LENGTH_SHORT).show()
             }
         }
 
         resetButton.setOnClickListener {
             clearAllAnchors()
-            Toast.makeText(this, "Все точки сброшены.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.AllDotsClearToast), Toast.LENGTH_SHORT).show()
         }
 
         clearLastButton.setOnClickListener {
@@ -66,8 +68,59 @@ class MainActivity : AppCompatActivity() {
         captureButton.setOnClickListener {
             captureScreenshot()
         }
+        if (!isOnboardingShown()) {
+            showOnboarding(resetButton, captureButton, clearLastButton)
+        }
+    }
+    private fun isOnboardingShown(): Boolean {
+        val sharedPrefs = getSharedPreferences("onboarding_prefs", MODE_PRIVATE)
+        return sharedPrefs.getBoolean("onboarding_shown", false)
     }
 
+    private fun setOnboardingShown() {
+        val sharedPrefs = getSharedPreferences("onboarding_prefs", MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("onboarding_shown", true).apply()
+    }
+    private fun showOnboarding(resetButton: Button, captureButton: Button, clearLastButton: Button) {
+        MaterialTapTargetPrompt.Builder(this)
+            .setTarget(resetButton)
+            .setPrimaryText(getString(R.string.DotsDropHint))
+            .setSecondaryText(getString(R.string.DotsDropHintText))
+            .setBackgroundColour(androidColor.parseColor("#80000000"))
+            .setPromptStateChangeListener { _, state ->
+                if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    showSecondPrompt(captureButton, clearLastButton)
+                }
+            }
+            .show()
+    }
+
+    private fun showSecondPrompt(resetButton: Button, clearLastButton: Button) {
+        MaterialTapTargetPrompt.Builder(this)
+            .setTarget(clearLastButton)
+            .setPrimaryText(getString(R.string.ClearLastButtonHint))
+            .setSecondaryText(getString(R.string.ClearLastButtonHintText))
+            .setBackgroundColour(androidColor.parseColor("#80000000"))
+            .setPromptStateChangeListener { _, state ->
+                if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    showThirdPrompt(resetButton)
+                }
+            }
+            .show()
+    }
+    private fun showThirdPrompt(resetButton: Button) {
+        MaterialTapTargetPrompt.Builder(this)
+            .setTarget(resetButton)
+            .setPrimaryText(getString(R.string.TakePhoto))
+            .setSecondaryText(getString(R.string.TakePhotoHintText))
+            .setBackgroundColour(androidColor.parseColor("#80000000"))
+            .setPromptStateChangeListener { _, state ->
+                if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                    setOnboardingShown()
+                }
+            }
+            .show()
+    }
     private fun handleTap(hitResult: HitResult) {
         val anchor = hitResult.createAnchor()
         anchors.add(anchor)
@@ -78,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             val lastIndex = anchors.size - 1
             val distance = calculateDistance(anchors[lastIndex - 1], anchors[lastIndex])
             val midPoint = calculateMidPoint(anchors[lastIndex - 1], anchors[lastIndex])
-            Toast.makeText(this, "Расстояние: ${"%.2f".format(distance)} м", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Size: ${"%.2f".format(distance)} м", Toast.LENGTH_SHORT).show()
             showDistanceText(midPoint, distance)
         }
     }
@@ -132,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             .exceptionally { throwable ->
-                Log.e("AR_TEXT", "Не удалось создать текстовый элемент: ${throwable.message}")
+                Log.e("AR_TEXT", getString(R.string.TextElementError, throwable.message))
                 null
             }
     }
@@ -164,9 +217,9 @@ class MainActivity : AppCompatActivity() {
                 textNodes.removeAt(textNodes.size - 1).setParent(null)
             }
 
-            Toast.makeText(this, "Последняя точка удалена.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.LastDotClearToast), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Нет точек для удаления.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.NotDotsToClearToast), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -206,7 +259,8 @@ class MainActivity : AppCompatActivity() {
                 if (copyResult == PixelCopy.SUCCESS) {
                     saveBitmap(bitmap)
                 } else {
-                    Toast.makeText(this, "Ошибка при создании фото", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.ErrorPhotoCreationToast), Toast.LENGTH_SHORT).show()
                 }
             },
             android.os.Handler(mainLooper)
@@ -214,18 +268,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveBitmap(bitmap: Bitmap) {
+        val projectPath = intent.getStringExtra("projectPath")
+        if (projectPath.isNullOrEmpty()) {
+            Toast.makeText(this, "Проект не выбран. Фото не сохранено.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val projectFolder = File(projectPath)
+        if (!projectFolder.exists()) {
+            projectFolder.mkdirs()
+        }
+
         val filename = "AR_Screenshot_${System.currentTimeMillis()}.png"
-        val path = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)?.absolutePath
-        val file = File(path, filename)
+        val file = File(projectFolder, filename)
 
         try {
             FileOutputStream(file).use { outputStream ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                Toast.makeText(this, "Фото сохранено: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.PhotoSavedToast, file.absolutePath), Toast.LENGTH_SHORT).show()
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(this, "Не удалось сохранить фото", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.SavedPhotoError), Toast.LENGTH_SHORT).show()
         }
     }
+
 }

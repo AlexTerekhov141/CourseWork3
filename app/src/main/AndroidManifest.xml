@@ -24,6 +24,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".OpenCVAcitivity" />
         <activity android:name=".PhotoGalleryActivity" />
+        <activity android:name=".ProjectActivity" />
         <meta-data android:name="com.google.ar.core" android:value="required" />
         <provider
             android:name="androidx.core.content.FileProvider"

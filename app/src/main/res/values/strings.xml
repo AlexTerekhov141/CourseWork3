@@ -7,7 +7,6 @@
     <string name="HelpButton">Start scanning</string>
     <string name="OpencvButton">Opencv</string>
     <string name="GalleryButton">Gallery</string>
-
     <string name="ChoosePlate">Select vertical or horizontal plane.</string>
     <string name="DotsDrop">The points have been reset.</string>
     <string name="WelcomeHint">Welcome!</string>
@@ -19,4 +18,23 @@
     <string name="Distance">Distance</string>
     <string name="NoSavedPhotos">There are no saved photos.</string>
     <string name="DeleteOneDot">Clear one dot</string>
+    <string name="ChoosePlateToast">Select vertical or horizontal plane.</string>
+    <string name="AllDotsClearToast">All points have been reset.</string>
+    <string name="TextElementError">Failed to create text element: %1$s</string>
+    <string name="LastDotClearToast">The last point has been removed.</string>
+    <string name="NotDotsToClearToast">There are no points to delete.</string>
+    <string name="ErrorPhotoCreationToast">Error creating photo</string>
+    <string name="PhotoSavedToast">Photo saved: %1$s</string>
+    <string name="SavedPhotoError">Failed to save photo</string>
+    <string name="CantOpenPhotoToast">Failed to open photo</string>
+    <string name="ErrorPhotoOpenning">Error opening photo: %1$s</string>
+    <string name="CreateProject">Create Project</string>
+    <string name="ProjectName">Enter the project name</string>
+    <string name="ChooseExisting">Select existing</string>
+    <string name="EnterProjectNameToast">Enter the project name!</string>
+    <string name="NoProjectsAvailablToast">There are no projects available.</string>
+    <string name="CancelButton">Cancel</string>
+    <string name="NoPhotosInProjectToast">There are no photos in the project %1$s.</string>
+    <string name="ClearLastButtonHint">Reset point</string>
+    <string name="ClearLastButtonHintText">This button deletes the last point.</string>
 </resources>
