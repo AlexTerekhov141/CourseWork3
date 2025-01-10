@@ -31,7 +31,7 @@ class ProjectActivity : AppCompatActivity() {
                 intent.putExtra("projectPath", projectPath)
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Введите имя проекта!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ProjectName), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -41,7 +41,7 @@ class ProjectActivity : AppCompatActivity() {
             if (projects.isNotEmpty()) {
                 showProjectSelectionDialog(projects)
             } else {
-                Toast.makeText(this, "Нет доступных проектов.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.NoProjectsAvailablToast), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -64,7 +64,7 @@ class ProjectActivity : AppCompatActivity() {
     private fun showProjectSelectionDialog(projects: List<File>) {
         val projectNames = projects.map { it.name }
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Выберите проект")
+        builder.setTitle(getString(R.string.ChooseExisting))
 
         builder.setItems(projectNames.toTypedArray()) { _, which ->
             val selectedProject = projects[which]
@@ -74,7 +74,7 @@ class ProjectActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        builder.setNegativeButton("Отмена", null)
+        builder.setNegativeButton(getString(R.string.CancelButton), null)
         builder.show()
     }
 }

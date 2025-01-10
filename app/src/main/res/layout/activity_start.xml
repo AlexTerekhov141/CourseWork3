@@ -41,8 +41,12 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/white"
         android:backgroundTint="@color/button_color"
-        android:padding="12dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingRight="30dp"
         android:layout_marginTop="16dp"
+        android:drawableEnd="@drawable/ic_scan"
         android:elevation="6dp" />
     <Button
         android:id="@+id/startButtonOpencv"
@@ -53,7 +57,11 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/white"
         android:backgroundTint="@color/button_color"
-        android:padding="12dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingRight="30dp"
+        android:drawableEnd="@drawable/ic_opencv"
         android:layout_marginTop="16dp"
         android:elevation="6dp" />
     <Button
@@ -65,8 +73,12 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/white"
         android:backgroundTint="@color/button_color"
-        android:padding="12dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingRight="30dp"
         android:layout_marginTop="16dp"
+        android:drawableEnd="@drawable/ic_storage"
         android:elevation="6dp" />
 
 

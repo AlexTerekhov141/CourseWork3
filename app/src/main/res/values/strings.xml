@@ -5,7 +5,7 @@
     <string name="Photo">Photo</string>
     <string name="Helptext">Click the button below to start scanning.</string>
     <string name="HelpButton">Start scanning</string>
-    <string name="OpencvButton">Opencv</string>
+    <string name="OpencvButton">Opencv(beta)</string>
     <string name="GalleryButton">Gallery</string>
     <string name="ChoosePlate">Select vertical or horizontal plane.</string>
     <string name="DotsDrop">The points have been reset.</string>
@@ -37,4 +37,5 @@
     <string name="NoPhotosInProjectToast">There are no photos in the project %1$s.</string>
     <string name="ClearLastButtonHint">Reset point</string>
     <string name="ClearLastButtonHintText">This button deletes the last point.</string>
+    <string name="ProjectNotChosenToast">Project not selected. Photo not saved.</string>
 </resources>
