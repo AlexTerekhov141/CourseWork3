@@ -22,7 +22,6 @@ class StartActivity : AppCompatActivity() {
         logoImage.alpha = 0f
         logoImage.animate().alpha(1f).setDuration(1500).start()
 
-
         startButton.alpha = 0f
         startButton.animate().alpha(1f).setDuration(2000).start()
 
@@ -33,7 +32,7 @@ class StartActivity : AppCompatActivity() {
         viewPhotosButton.animate().alpha(1f).setDuration(2000).start()
 
         startButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this,ProjectActivity::class.java)
             startActivity(intent)
         }
 
@@ -41,7 +40,6 @@ class StartActivity : AppCompatActivity() {
             val intent = Intent(this, OpenCVAcitivity::class.java)
             startActivity(intent)
         }
-
 
         viewPhotosButton.setOnClickListener {
             val intent = Intent(this, PhotoGalleryActivity::class.java)

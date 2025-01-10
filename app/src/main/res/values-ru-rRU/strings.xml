@@ -19,4 +19,23 @@
     <string name="Distance">Расстояние</string>
     <string name="NoSavedPhotos">Нет сохранённых фото.</string>
     <string name="DeleteOneDot">Удалить точку</string>
+    <string name="ChoosePlateToast">Выберите вертикальную или горизонтальную плоскость.</string>
+    <string name="AllDotsClearToast">Все точки сброшены.</string>
+    <string name="TextElementError">Не удалось создать текстовый элемент: %1$s</string>
+    <string name="LastDotClearToast">Последняя точка удалена.</string>
+    <string name="NotDotsToClearToast">Нет точек для удаления.</string>
+    <string name="ErrorPhotoCreationToast">Ошибка при создании фото</string>
+    <string name="PhotoSavedToast">Фото сохранено: %1$s</string>
+    <string name="SavedPhotoError">Не удалось сохранить фото</string>
+    <string name="CantOpenPhotoToast">Не удалось открыть фото</string>
+    <string name="ErrorPhotoOpenning">Ошибка открытия фото: %1$s</string>
+    <string name="CreateProject">Создать проект</string>
+    <string name="ProjectName">Введите имя проекта</string>
+    <string name="ChooseExisting">Выбрать существующий</string>
+    <string name="EnterProjectNameToast">Введите имя проекта!</string>
+    <string name="NoProjectsAvailablToast">Нет доступных проектов.</string>
+    <string name="CancelButton">Отмена</string>
+    <string name="NoPhotosInProjectToast">Нет фотографий в проекте %1$s.</string>
+    <string name="ClearLastButtonHint">Сброс точки</string>
+    <string name="ClearLastButtonHintText">Эта кнопка удаляет последнюю точку.</string>
 </resources>

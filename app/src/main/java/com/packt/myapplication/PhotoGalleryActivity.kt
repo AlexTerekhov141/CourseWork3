@@ -1,17 +1,21 @@
 package com.packt.myapplication
 
+import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
-import com.packt.myapplication.BuildConfig
 
 class PhotoGalleryActivity : AppCompatActivity() {
+
+    private lateinit var adapter: PhotoAdapter
+    private lateinit var photos: MutableList<File>
+    private lateinit var projectNames: List<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,24 +25,46 @@ class PhotoGalleryActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
 
-        val photos = getSavedPhotos()
-        if (photos.isNotEmpty()) {
-            val adapter = PhotoAdapter(photos) { photo ->
-                openPhoto(photo)
-            }
-            recyclerView.adapter = adapter
+        projectNames = getProjectNames()
+        if (projectNames.isNotEmpty()) {
+            showProjectSelectionDialog()
         } else {
-            Toast.makeText(this, R.string.NoSavedPhotos, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.NoProjectsAvailablToast), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun getSavedPhotos(): List<File> {
-        val path = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
-        val directory = File(path?.absolutePath ?: "")
-        if (!directory.exists() || !directory.isDirectory) {
-            return emptyList()
+    private fun getProjectNames(): List<String> {
+        val galleryPath = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES)
+        val directories = galleryPath?.listFiles()?.filter { it.isDirectory } ?: emptyList()
+        return directories.map { it.name }
+    }
+
+    private fun showProjectSelectionDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.ChooseExisting))
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, projectNames)
+        builder.setAdapter(adapter) { _, which ->
+            val projectName = projectNames[which]
+            loadPhotos(projectName)
         }
-        return directory.listFiles()?.filter { it.extension == "png" } ?: emptyList()
+        builder.setNegativeButton(getString(R.string.CancelButton), null)
+        builder.show()
+    }
+
+    private fun loadPhotos(projectName: String) {
+        val projectFolder = File(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES), projectName)
+        photos = projectFolder.listFiles()?.filter { it.extension == "png" }?.toMutableList() ?: mutableListOf()
+        if (photos.isNotEmpty()) {
+            adapter = PhotoAdapter(
+                photos,
+                onClick = { photo -> openPhoto(photo) }
+            )
+            findViewById<RecyclerView>(R.id.photoRecyclerView).adapter = adapter
+        } else {
+            Toast.makeText(this,
+                getString(R.string.NoPhotosInProjectToast, projectName), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openPhoto(photo: File) {
@@ -56,8 +82,8 @@ class PhotoGalleryActivity : AppCompatActivity() {
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Не удалось открыть фото", Toast.LENGTH_SHORT).show()
-            Log.e("PhotoGallery", "Ошибка открытия фото: ${e.message}")
+            Toast.makeText(this, getString(R.string.CantOpenPhotoToast), Toast.LENGTH_SHORT).show()
+            Log.e("PhotoGallery", getString(R.string.ErrorPhotoOpenning, e.message))
         }
     }
 
