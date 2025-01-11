@@ -6,7 +6,7 @@
     <string name="Photo">Фото</string>
     <string name="Helptext">Нажмите кнопку ниже, чтобы начать сканирование.</string>
     <string name="HelpButton">Начать сканирование</string>
-    <string name="OpencvButton">Opencv</string>
+    <string name="OpencvButton">Opencv(beta)</string>
     <string name="GalleryButton">Галлерея</string>
     <string name="ChoosePlate">Выберите вертикальную или горизонтальную плоскость.</string>
     <string name="DotsDrop">Точки сброшены.</string>
@@ -38,4 +38,5 @@
     <string name="NoPhotosInProjectToast">Нет фотографий в проекте %1$s.</string>
     <string name="ClearLastButtonHint">Сброс точки</string>
     <string name="ClearLastButtonHintText">Эта кнопка удаляет последнюю точку.</string>
+    <string name="ProjectNotChosenToast">Проект не выбран. Фото не сохранено.</string>
 </resources>

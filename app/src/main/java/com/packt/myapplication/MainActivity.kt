@@ -270,7 +270,7 @@ class MainActivity : AppCompatActivity() {
     private fun saveBitmap(bitmap: Bitmap) {
         val projectPath = intent.getStringExtra("projectPath")
         if (projectPath.isNullOrEmpty()) {
-            Toast.makeText(this, "Проект не выбран. Фото не сохранено.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.ProjectNotChosenToast), Toast.LENGTH_SHORT).show()
             return
         }
 
