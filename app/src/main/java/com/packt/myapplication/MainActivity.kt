@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         captureButton.setOnClickListener {
             captureScreenshot()
         }
-        if (!isOnboardingShown()) {
+        if (isOnboardingShown()) {
             showOnboarding(resetButton, captureButton, clearLastButton)
         }
     }
