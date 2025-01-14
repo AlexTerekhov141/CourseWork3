@@ -9,6 +9,9 @@
 ## StartActivity
 ![img_3.png](images/img_3.png)
 
+## ProjectActivity
+![img_8.png](images/img_8.png)
+
 ## MainActivity
 ![img.png](images/img.png)
 ![img_1.png](images/img_1.png)
@@ -20,3 +23,4 @@
 ## Gallery
 
 ![img_5.png](images/img_5.png)
+![img_7.png](images/img_7.png)
