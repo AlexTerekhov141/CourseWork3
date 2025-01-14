@@ -143,43 +143,89 @@ class MainActivity : AppCompatActivity() {
 
         MaterialFactory.makeOpaqueWithColor(this, Color(android.graphics.Color.BLUE))
             .thenAccept { material ->
-                val sphere = ShapeFactory.makeSphere(0.01f, Vector3.zero(), material)
+                val sphere = ShapeFactory.makeSphere(0.009f, Vector3.zero(), material)
                 anchorNode.renderable = sphere
             }
+
+
+        anchorNode.setOnTouchListener { hitTestResult, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_MOVE) {
+                val hit = arFragment.arSceneView.arFrame?.hitTest(motionEvent)?.firstOrNull()
+                if (hit != null) {
+                    moveAnchor(anchorNode, hit)
+                }
+            }
+            true
+        }
 
         anchorNodes.add(anchorNode)
     }
 
+    private fun moveAnchor(anchorNode: AnchorNode, hitResult: HitResult) {
+        MaterialFactory.makeOpaqueWithColor(this, Color(android.graphics.Color.RED))
+            .thenAccept { redMaterial ->
+                val sphere = ShapeFactory.makeSphere(0.009f, Vector3.zero(), redMaterial)
+                anchorNode.renderable = sphere
+            }
+
+        anchorNode.anchor?.detach()
+
+        val newAnchor = hitResult.createAnchor()
+        anchorNode.anchor = newAnchor
+
+        android.os.Handler(mainLooper).postDelayed({
+            MaterialFactory.makeOpaqueWithColor(this, Color(android.graphics.Color.BLUE))
+                .thenAccept { blueMaterial ->
+                    val sphere = ShapeFactory.makeSphere(0.009f, Vector3.zero(), blueMaterial)
+                    anchorNode.renderable = sphere
+                }
+        }, 500)
+
+        updateDistancesAndTexts()
+    }
+
+    private fun updateDistancesAndTexts() {
+
+        textNodes.forEach { it.setParent(null) }
+        textNodes.clear()
+
+        if (anchorNodes.size > 1) {
+            val anchors = anchorNodes.mapNotNull { it.anchor }
+
+            for (i in 0 until anchors.size - 1) {
+                val distance = calculateDistance(anchors[i], anchors[i + 1])
+                val midPoint = calculateMidPoint(anchors[i], anchors[i + 1])
+                showDistanceText(midPoint, distance)
+            }
+        }
+    }
+
+
+
     private fun showDistanceText(position: Vector3, distance: Double) {
+
         ViewRenderable.builder()
             .setView(this, R.layout.distance_text_view)
             .build()
             .thenAccept { renderable ->
-
                 val textNode = AnchorNode().apply {
                     worldPosition = position
                 }
                 textNode.renderable = renderable
 
-
                 val textView = renderable.view.findViewById<TextView>(R.id.distanceTextView)
                 textView.text = "${"%.2f".format(distance)} м"
-
 
                 arFragment.arSceneView.scene.addChild(textNode)
                 textNodes.add(textNode)
 
-
-                arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
+                arFragment.arSceneView.scene.addOnUpdateListener {
                     val cameraPosition = arFragment.arSceneView.scene.camera.worldPosition
                     val directionToCamera = Vector3.subtract(cameraPosition, textNode.worldPosition).normalized()
 
                     val distanceToCamera = Vector3.subtract(textNode.worldPosition, cameraPosition).length()
-
-
                     val scaleFactor = distanceToCamera / 2.0f
                     textNode.localScale = Vector3(scaleFactor, scaleFactor, scaleFactor)
-
 
                     textNode.worldRotation = Quaternion.lookRotation(directionToCamera, Vector3.up())
                 }
@@ -189,6 +235,7 @@ class MainActivity : AppCompatActivity() {
                 null
             }
     }
+
 
 
     private fun clearAllAnchors() {
@@ -206,12 +253,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearLastAnchor() {
-        if (anchors.isNotEmpty()) {
+        if (anchors.isNotEmpty() && anchorNodes.isNotEmpty()) {
             anchors.removeAt(anchors.size - 1).detach()
 
-            if (anchorNodes.isNotEmpty()) {
-                anchorNodes.removeAt(anchorNodes.size - 1).setParent(null)
-            }
+            anchorNodes.removeAt(anchorNodes.size - 1).setParent(null)
+
 
             if (textNodes.isNotEmpty()) {
                 textNodes.removeAt(textNodes.size - 1).setParent(null)
