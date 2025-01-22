@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.ar.sceneform.ux.ArFragment
 import org.opencv.android.CameraActivity
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame
@@ -18,8 +19,9 @@ import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
 import org.opencv.imgproc.Imgproc
 import java.io.IOException
-
+import androidx.appcompat.app.AppCompatActivity
 class OpenCVAcitivity : CameraActivity(), CvCameraViewListener2 {
+
     public override fun onResume() {
         super.onResume()
         if (mOpenCvCameraView != null) mOpenCvCameraView!!.enableView()
@@ -39,7 +41,6 @@ class OpenCVAcitivity : CameraActivity(), CvCameraViewListener2 {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (OpenCVLoader.initLocal()) {
             Log.i(TAG, "OpenCV loaded successfully")
         } else {
