@@ -1,13 +1,17 @@
 package com.packt.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.net.Uri
 import android.graphics.Color as androidColor
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.PixelCopy
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +23,7 @@ import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.Color
 import com.google.ar.sceneform.rendering.MaterialFactory
+import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ShapeFactory
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
@@ -28,26 +33,27 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var arFragment: ArFragment
     private lateinit var resetButton: Button
     private lateinit var clearLastButton: Button
     private lateinit var captureButton: Button
-
+    private lateinit var settingsButton : ImageButton
     private val anchors = mutableListOf<Anchor>()
     private val anchorNodes = mutableListOf<AnchorNode>()
     private val textNodes = mutableListOf<AnchorNode>()
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
         arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
         resetButton = findViewById(R.id.resetButton)
         clearLastButton = findViewById(R.id.clearLastButton)
         captureButton = findViewById(R.id.captureButton)
-
+        settingsButton = findViewById(R.id.action_settings)
         arFragment.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent ->
             if (plane.type == Plane.Type.VERTICAL || plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
                 handleTap(hitResult)
@@ -64,11 +70,14 @@ class MainActivity : AppCompatActivity() {
         clearLastButton.setOnClickListener {
             clearLastAnchor()
         }
-
+        settingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
         captureButton.setOnClickListener {
             captureScreenshot()
         }
-        if (isOnboardingShown()) {
+        if (!isOnboardingShown()) {
             showOnboarding(resetButton, captureButton, clearLastButton)
         }
     }
@@ -126,15 +135,91 @@ class MainActivity : AppCompatActivity() {
         anchors.add(anchor)
 
         addMarker(anchor)
-
+        val selectedTool = sharedPreferences.getString("selected_tool", "measure")
         if (anchors.size > 1) {
             val lastIndex = anchors.size - 1
             val distance = calculateDistance(anchors[lastIndex - 1], anchors[lastIndex])
             val midPoint = calculateMidPoint(anchors[lastIndex - 1], anchors[lastIndex])
-            Toast.makeText(this, "Size: ${"%.2f".format(distance)} м", Toast.LENGTH_SHORT).show()
-            showDistanceText(midPoint, distance)
+            Toast.makeText(this, "Дистанция: ${"%.2f".format(distance)} м", Toast.LENGTH_SHORT).show()
+            if(selectedTool == "measure"){
+                showDistanceText(midPoint, distance)
+            }else if(selectedTool == "area"){
+                if (anchors.size >= 4){
+                    val area = calculateArea(anchors)
+                    showAreaText(anchors,area)
+                }
+
+            }else{
+                if(anchors.size >=3){
+                    val corner = calculateCorner(anchors)
+                    showCornerText(anchors,corner)
+                }
+            }
         }
     }
+    private fun calculateArea(anchors: List<Anchor>): Double {
+        val length = calculateDistance(anchors[0], anchors[1])
+        val width = calculateDistance(anchors[1], anchors[2])
+
+        return length * width
+    }
+
+    private fun calculateCorner(anchors: List<Anchor>): Double {
+        val lastIndex = anchors.size - 1
+        val pointA = anchors[lastIndex - 2].pose
+        val pointB = anchors[lastIndex - 1].pose
+        val pointC = anchors[lastIndex].pose
+
+        val vectorAB = Vector3(
+            pointB.tx() - pointA.tx(),
+            pointB.ty() - pointA.ty(),
+            pointB.tz() - pointA.tz()
+        )
+
+        val vectorBC = Vector3(
+            pointC.tx() - pointB.tx(),
+            pointC.ty() - pointB.ty(),
+            pointC.tz() - pointB.tz()
+        )
+
+        val dotProduct = (vectorAB.x * vectorBC.x) +
+                (vectorAB.y * vectorBC.y) +
+                (vectorAB.z * vectorBC.z)
+
+        val magnitudeAB = kotlin.math.sqrt(
+            vectorAB.x * vectorAB.x +
+                    vectorAB.y * vectorAB.y +
+                    vectorAB.z * vectorAB.z
+        )
+
+        val magnitudeBC = kotlin.math.sqrt(
+            vectorBC.x * vectorBC.x +
+                    vectorBC.y * vectorBC.y +
+                    vectorBC.z * vectorBC.z
+        )
+
+        val cosTheta = dotProduct / (magnitudeAB * magnitudeBC)
+
+        val crossProduct = Vector3(
+            vectorAB.y * vectorBC.z - vectorAB.z * vectorBC.y,
+            vectorAB.z * vectorBC.x - vectorAB.x * vectorBC.z,
+            vectorAB.x * vectorBC.y - vectorAB.y * vectorBC.x
+        )
+
+        val crossMagnitude = kotlin.math.sqrt(
+            crossProduct.x * crossProduct.x +
+                    crossProduct.y * crossProduct.y +
+                    crossProduct.z * crossProduct.z
+        )
+
+        val angleRadians = kotlin.math.atan2(crossMagnitude, dotProduct)
+        return 180 - Math.toDegrees(angleRadians.toDouble())
+    }
+
+
+
+
+
 
     private fun addMarker(anchor: Anchor) {
         val anchorNode = AnchorNode(anchor).apply {
@@ -199,10 +284,121 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun showAreaText(anchors: List<Anchor>, area: Double) {
+        val center = calculatePolygonCenter(anchors)
 
+        ViewRenderable.builder()
+            .setView(this, R.layout.area_text_view)
+            .build()
+            .thenAccept { renderable ->
+                val textNode = AnchorNode().apply {
+                    worldPosition = center
+                }
+                textNode.renderable = renderable
 
+                val textView = renderable.view.findViewById<TextView>(R.id.areaTextView)
+                textView.text = "${"%.4f".format(area)} м²"
 
+                arFragment.arSceneView.scene.addChild(textNode)
+                textNodes.add(textNode)
+
+                arFragment.arSceneView.scene.addOnUpdateListener {
+                    val cameraPosition = arFragment.arSceneView.scene.camera.worldPosition
+                    val directionToCamera = Vector3.subtract(cameraPosition, textNode.worldPosition).normalized()
+
+                    val distanceToCamera = Vector3.subtract(textNode.worldPosition, cameraPosition).length()
+                    val scaleFactor = distanceToCamera / 2.0f
+                    textNode.localScale = Vector3(scaleFactor, scaleFactor, scaleFactor)
+
+                    textNode.worldRotation = Quaternion.lookRotation(directionToCamera, Vector3.up())
+                }
+            }
+            .exceptionally { throwable ->
+                Log.e("AR_AREA", getString(R.string.TextElementError, throwable.message))
+                null
+            }
+    }
+    private fun showCornerText(anchors: List<Anchor>, area: Double) {
+        val center = calculatePolygonCenter(anchors)
+
+        ViewRenderable.builder()
+            .setView(this, R.layout.area_text_view)
+            .build()
+            .thenAccept { renderable ->
+                val textNode = AnchorNode().apply {
+                    worldPosition = center
+                }
+                textNode.renderable = renderable
+
+                val textView = renderable.view.findViewById<TextView>(R.id.areaTextView)
+                textView.text = "${"%.2f".format(area)} deg."
+
+                arFragment.arSceneView.scene.addChild(textNode)
+                textNodes.add(textNode)
+
+                arFragment.arSceneView.scene.addOnUpdateListener {
+                    val cameraPosition = arFragment.arSceneView.scene.camera.worldPosition
+                    val directionToCamera = Vector3.subtract(cameraPosition, textNode.worldPosition).normalized()
+
+                    val distanceToCamera = Vector3.subtract(textNode.worldPosition, cameraPosition).length()
+                    val scaleFactor = distanceToCamera / 2.0f
+                    textNode.localScale = Vector3(scaleFactor, scaleFactor, scaleFactor)
+
+                    textNode.worldRotation = Quaternion.lookRotation(directionToCamera, Vector3.up())
+                }
+            }
+            .exceptionally { throwable ->
+                Log.e("AR_AREA", getString(R.string.TextElementError, throwable.message))
+                null
+            }
+    }
+
+    private fun calculatePolygonCenter(anchors: List<Anchor>): Vector3 {
+        val x = anchors.map { it.pose.tx() }.average().toFloat()
+        val y = anchors.map { it.pose.ty() }.average().toFloat()
+        val z = anchors.map { it.pose.tz() }.average().toFloat()
+        return Vector3(x, y, z)
+    }
     private fun showDistanceText(position: Vector3, distance: Double) {
+        val unit = sharedPreferences.getString("unit", "meters")
+
+        val (distanceInSelectedUnit, displayUnit) = when (unit) {
+            "inches" -> {
+                val distanceInInches = distance * 39.3701
+                distanceInInches to "дюйм"
+
+            }
+            "meters" -> {
+                when {
+                    distance >= 1.0 -> {
+                        distance to "м"
+                    }
+                    distance >= 0.01 -> {
+                        val distanceInCentimeters = distance * 100
+                        distanceInCentimeters to "см"
+                    }
+                    else -> {
+                        val distanceInCentimeters = distance * 100
+                        distanceInCentimeters to "см"
+                    }
+                }
+            }
+            else -> {
+                when {
+                    distance >= 1.0 -> {
+                        distance to "м"
+                    }
+                    distance >= 0.01 -> {
+                        val distanceInCentimeters = distance * 100
+                        distanceInCentimeters to "см"
+                    }
+                    else -> {
+                        val distanceInCentimeters = distance * 100
+                        distanceInCentimeters to "см"
+                    }
+                }
+            }
+        }
 
         ViewRenderable.builder()
             .setView(this, R.layout.distance_text_view)
@@ -214,7 +410,7 @@ class MainActivity : AppCompatActivity() {
                 textNode.renderable = renderable
 
                 val textView = renderable.view.findViewById<TextView>(R.id.distanceTextView)
-                textView.text = "${"%.2f".format(distance)} м"
+                textView.text = "${"%.2f".format(distanceInSelectedUnit)} $displayUnit"
 
                 arFragment.arSceneView.scene.addChild(textNode)
                 textNodes.add(textNode)

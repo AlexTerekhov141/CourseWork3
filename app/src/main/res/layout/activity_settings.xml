@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/settings_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Настройки инструментов"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
+
+
+    <TextView
+        android:id="@+id/subTitleTextTools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Режим"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text_color"
+        android:fontFamily="sans-serif-light"
+        android:textAlignment="center" />
+    <RadioGroup
+        android:id="@+id/tools_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/tool_measure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Default" />
+        <RadioButton
+            android:id="@+id/tool_corner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Угол" />
+        <RadioButton
+            android:id="@+id/tool_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Площадь" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/subTitleTextMetres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Размерность"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text_color"
+        android:fontFamily="sans-serif-light"
+        android:textAlignment="center" />
+    <RadioGroup
+        android:id="@+id/tools_radio_group2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/tool_cm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Metres/Cmetres" />
+        <RadioButton
+            android:id="@+id/tool_inches"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inches" />
+    </RadioGroup>
+
+</LinearLayout>

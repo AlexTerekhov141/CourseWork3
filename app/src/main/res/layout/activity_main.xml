@@ -62,7 +62,16 @@
             android:layout_margin="8dp"
             android:elevation="6dp" />
 
-
-
     </LinearLayout>
+    <ImageButton
+        android:id="@+id/action_settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="Settings"
+         />
     </RelativeLayout>
