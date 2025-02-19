@@ -57,5 +57,10 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
+    implementation ("org.rajawali3d:rajawali:1.1.970")
+
+
     implementation(project(":opencv"))
 }

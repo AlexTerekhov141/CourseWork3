@@ -38,4 +38,19 @@
     <string name="ClearLastButtonHint">Reset point</string>
     <string name="ClearLastButtonHintText">This button deletes the last point.</string>
     <string name="ProjectNotChosenToast">Project not selected. Photo not saved.</string>
+    <string name="InvalidProjectPathToast">Неверный путь к проекту.</string>
+    <string name="NoPhotosToUploadToast">Нет фотографий для загрузки.</string>
+    <string name="UploadFailedToast">Ошибка загрузки: %1$s.</string>
+    <string name="UploadSuccessToast">Успешно загружено: %1$s.</string>
+    <string name="CreateObjFailedToast">Failed to create object on server.</string>
+    <string name="CreateObjSuccessToast">Successfully created object on server.</string>
+    <string name="onboarding_title_1">ArMeurr - Умный инструмент для измерений\n</string>
+    <string name="onboarding_description_1"> Измеряйте длину, площадь и углы с высокой точностью\n</string>
+    <string name="next">Next\n</string>
+    <string name="onboarding_title_2">Create an impressive photos and publish it</string>
+    <string name="onboarding_description_2">Сохраняйте результаты, добавляйте фотографии и делитесь ими</string>
+    <string name="onboarding_description_3">идеальный инструмент для строителей, дизайнеров и инженеров.</string>
+    <string name="onboarding_title_3">Инструмент для любителей и професионалов</string>
+    <string name="skip">skip</string>
+
 </resources>

@@ -39,4 +39,19 @@
     <string name="ClearLastButtonHint">Сброс точки</string>
     <string name="ClearLastButtonHintText">Эта кнопка удаляет последнюю точку.</string>
     <string name="ProjectNotChosenToast">Проект не выбран. Фото не сохранено.</string>
+    <string name="InvalidProjectPathToast">Неверный путь к проекту.</string>
+    <string name="NoPhotosToUploadToast">Нет фотографий для загрузки.</string>
+    <string name="UploadFailedToast">Ошибка загрузки: %1$s.</string>
+    <string name="UploadSuccessToast">Успешно загружено: %1$s.</string>
+    <string name="CreateObjFailedToast">Failed to create object on server.</string>
+    <string name="CreateObjSuccessToast">Successfully created object on server.</string>
+    <string name="onboarding_title_1">Measure\n</string>
+    <string name="onboarding_description_1">Measure objects\n</string>
+    <string name="next">Next\n</string>
+    <string name="onboarding_title_2">Create an impressive photos and publish it</string>
+    <string name="onboarding_description_2">Сохраняйте результаты, добавляйте фотографии и делитесь ими</string>
+    <string name="onboarding_description_3">идеальный инструмент для строителей, дизайнеров и инженеров.</string>
+    <string name="onboarding_title_3">Инструмент как для любителей так и професионалов</string>
+    <string name="skip">skip</string>
+
 </resources>
