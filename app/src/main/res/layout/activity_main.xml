@@ -1,5 +1,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,45 +24,52 @@
         android:elevation="8dp">
 
 
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/resetButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:fontFamily="sans-serif"
             android:textColor="@color/white"
-            android:backgroundTint="@color/button_color"
+            android:backgroundTint="#8799FE"
             android:paddingEnd="30dp"
             android:drawableEnd="@drawable/ic_clear"
             android:gravity="center"
             android:layout_margin="8dp"
-            android:elevation="6dp" />
-        <Button
+            android:elevation="6dp"
+            />
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/clearLastButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:fontFamily="sans-serif"
             android:textColor="@color/white"
-            android:backgroundTint="@color/button_color"
+            android:backgroundTint="#8799FE"
             android:paddingEnd="30dp"
             android:drawableEnd="@drawable/ic_clearall"
             android:gravity="center"
             android:layout_margin="8dp"
-            android:elevation="6dp" />
-        <Button
+            android:elevation="6dp"
+            />
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/captureButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:fontFamily="sans-serif"
             android:textColor="@color/white"
-            android:backgroundTint="@color/button_color"
+            android:backgroundTint="#8799FE"
             android:paddingEnd="30dp"
             android:drawableEnd="@drawable/ic_photo"
             android:gravity="center"
             android:layout_margin="8dp"
-            android:elevation="6dp" />
+            android:elevation="6dp"
+            />
 
     </LinearLayout>
     <ImageButton
@@ -74,4 +83,5 @@
         android:src="@drawable/ic_settings"
         android:contentDescription="Settings"
          />
-    </RelativeLayout>
+
+</RelativeLayout>

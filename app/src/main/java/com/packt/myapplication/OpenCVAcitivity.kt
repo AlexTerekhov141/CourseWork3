@@ -1,167 +1,211 @@
 package com.packt.myapplication
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.SurfaceTexture
+import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraManager
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
-import android.view.View
+import android.view.Surface
+import android.view.TextureView
+import android.widget.ImageView
 import android.widget.Toast
-import com.google.ar.sceneform.ux.ArFragment
-import org.opencv.android.CameraActivity
-import org.opencv.android.CameraBridgeViewBase
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2
+import androidx.core.content.ContextCompat
 import org.opencv.android.OpenCVLoader
-import org.opencv.core.Mat
-import org.opencv.core.MatOfByte
-import org.opencv.core.Point
-import org.opencv.core.Scalar
-import org.opencv.core.Size
+import org.opencv.android.Utils
+import org.opencv.core.*
+import org.opencv.core.Core.*
 import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
 import org.opencv.imgproc.Imgproc
-import java.io.IOException
-import androidx.appcompat.app.AppCompatActivity
-class OpenCVAcitivity : CameraActivity(), CvCameraViewListener2 {
+import java.io.File
+import java.io.FileOutputStream
 
-    public override fun onResume() {
-        super.onResume()
-        if (mOpenCvCameraView != null) mOpenCvCameraView!!.enableView()
-    }
-    private fun loadFileFromAssets(fileName: String): MatOfByte? {
-        return try {
-            val `is` = assets.open(fileName)
-            val buffer = ByteArray(`is`.available())
-            `is`.read(buffer)
-            `is`.close()
-            MatOfByte(*buffer)
-        } catch (e: IOException) {
-            Log.e(TAG, "Failed to load file from assets! Exception: $e")
-            Toast.makeText(this, "Failed to load file from assets!", Toast.LENGTH_LONG).show()
-            null
-        }
-    }
+class OpenCVAcitivity : AppCompatActivity() {
+
+    lateinit var cameraDevice: CameraDevice
+    lateinit var handler: Handler
+    lateinit var cameraManager: CameraManager
+    lateinit var textureView: TextureView
+    lateinit var imageView: ImageView
+
+    lateinit var yoloNet: Net
+    private val confThreshold = 0.5
+
+    var receivedDistance: Float = 0f
+
+    var sensorWidth = 5.76f
+    var sensorHeight = 4.29f
+    var focalLength = 4.2f
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (OpenCVLoader.initLocal()) {
-            Log.i(TAG, "OpenCV loaded successfully")
+        setContentView(R.layout.opencv_main)
+        getPermission()
+        val handlerThread = HandlerThread("videoThread")
+        handlerThread.start()
+        handler = Handler(handlerThread.looper)
+
+        imageView = findViewById(R.id.imageView)
+        textureView = findViewById(R.id.textureView)
+
+        receivedDistance = intent.getFloatExtra("distance", 0f)
+        Log.d("OpenCVActivity", "Полученное расстояние: $receivedDistance")
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.e("OpenCV", "Не удалось загрузить OpenCV!")
         } else {
-            Log.e(TAG, "OpenCV initialization failed!")
-            Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)
-                .show()
-            return
+            Log.d("OpenCV", "OpenCV загружен успешно!")
+            initYOLO()
         }
 
-        mModelBuffer = loadFileFromAssets("mobilenet_iter_73000.caffemodel")
-        mConfigBuffer = loadFileFromAssets("deploy.prototxt")
-        if (mModelBuffer == null || mConfigBuffer == null) {
-            Log.e(TAG, "Failed to load model from resources")
-        } else Log.i(TAG, "Model files loaded successfully")
-
-        net = Dnn.readNet("caffe", mModelBuffer, mConfigBuffer)
-        Log.i(TAG, "Network loaded successfully")
-
-        setContentView(R.layout.opencv_main)
-
-
-
-        mOpenCvCameraView = findViewById<View>(R.id.CameraView) as CameraBridgeViewBase
-        mOpenCvCameraView!!.visibility = CameraBridgeViewBase.VISIBLE
-        mOpenCvCameraView!!.setCvCameraViewListener(this)
-    }
-
-    public override fun onPause() {
-        super.onPause()
-        if (mOpenCvCameraView != null) mOpenCvCameraView!!.disableView()
-    }
-
-    override fun getCameraViewList(): List<CameraBridgeViewBase> {
-        return listOf(mOpenCvCameraView!!)
-    }
-
-    public override fun onDestroy() {
-        super.onDestroy()
-        if (mOpenCvCameraView != null) mOpenCvCameraView!!.disableView()
-
-        mModelBuffer!!.release()
-        mConfigBuffer!!.release()
-    }
-
-
-    override fun onCameraViewStarted(width: Int, height: Int) {
-    }
-
-    override fun onCameraFrame(inputFrame: CvCameraViewFrame): Mat {
-        val IN_WIDTH = 300
-        val IN_HEIGHT = 300
-        val IN_SCALE_FACTOR = 0.007843
-        val MEAN_VAL = 127.5
-        val THRESHOLD = 0.2
-
-
-
-        Log.d(TAG, "handle new frame!")
-        val frame = inputFrame.rgba()
-        Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2RGB)
-
-
-
-        val blob = Dnn.blobFromImage(
-            frame, IN_SCALE_FACTOR,
-            Size(IN_WIDTH.toDouble(), IN_HEIGHT.toDouble()),
-            Scalar(MEAN_VAL, MEAN_VAL, MEAN_VAL),  false,  false
-        )
-        net!!.setInput(blob)
-        var detections = net!!.forward()
-
-        val cols = frame.cols()
-        val rows = frame.rows()
-
-        detections = detections.reshape(1, detections.total().toInt() / 7)
-
-
-        for (i in 0 until detections.rows()) {
-
-            val confidence = detections[i, 2][0]
-            if (confidence > THRESHOLD) {
-                val classId = detections[i, 1][0].toInt()
-
-
-                val left = (detections[i, 3][0] * cols).toInt()
-                val top = (detections[i, 4][0] * rows).toInt()
-                val right = (detections[i, 5][0] * cols).toInt()
-                val bottom = (detections[i, 6][0] * rows).toInt()
-
-
-                val objectWidth = right - left
-                val objectHeight = bottom - top
-
-
-
-
-                Imgproc.rectangle(
-                    frame,
-                    Point(left.toDouble(), top.toDouble()),
-                    Point(right.toDouble(), bottom.toDouble()),
-                    Scalar(0.0, 255.0, 0.0)
-                )
-
-                Imgproc.putText(
-                    frame, "W = $objectWidth, H = $objectHeight", Point(left.toDouble(), top.toDouble()),
-                    Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255.0, 255.0, 0.0)
-                )
+        textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                openCamera()
+            }
+            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
+            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean = false
+            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+                processFrameYOLO()
             }
         }
 
-        return frame
+        cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = cameraManager.cameraIdList[0]
+        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
+        focalLength = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)?.firstOrNull()!!
+        val sensorSize = characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+        sensorWidth = sensorSize?.width!!
+        sensorHeight = sensorSize?.height!!
+        Toast.makeText(this, "f=$focalLength, sw=$sensorWidth, sh=$sensorHeight", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCameraViewStopped() {}
+    @SuppressLint("MissingPermission")
+    fun openCamera() {
+        cameraManager.openCamera(cameraManager.cameraIdList[0], object : CameraDevice.StateCallback() {
+            override fun onOpened(camera: CameraDevice) {
+                cameraDevice = camera
+                val surfaceTexture = textureView.surfaceTexture
+                val surface = Surface(surfaceTexture)
+                val captureRequest = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                captureRequest.addTarget(surface)
+                cameraDevice.createCaptureSession(listOf(surface), object : CameraCaptureSession.StateCallback() {
+                    override fun onConfigured(session: CameraCaptureSession) {
+                        session.setRepeatingRequest(captureRequest.build(), null, handler)
+                    }
+                    override fun onConfigureFailed(session: CameraCaptureSession) {}
+                }, handler)
+            }
+            override fun onDisconnected(camera: CameraDevice) {}
+            override fun onError(camera: CameraDevice, error: Int) {}
+        }, handler)
+    }
 
-    private var mConfigBuffer: MatOfByte? = null
-    private var mModelBuffer: MatOfByte? = null
-    private var net: Net? = null
-    private var mOpenCvCameraView: CameraBridgeViewBase? = null
+    fun getPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 101)
+        }
+    }
 
-    companion object {
-        private const val TAG = "OpenCV-MobileNet"
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            getPermission()
+        }
+    }
+
+    private fun initYOLO() {
+        val cfgPath = copyAssetFile("yolov3-tiny.cfg")
+        val weightsPath = copyAssetFile("yolov3-tiny2.weights")
+        yoloNet = Dnn.readNetFromDarknet(cfgPath, weightsPath)
+        Log.d("YOLO", "YOLO-сеть загружена")
+    }
+
+    private fun copyAssetFile(filename: String): String {
+        val file = File(filesDir, filename)
+        if (!file.exists()) {
+            assets.open(filename).use { inputStream ->
+                FileOutputStream(file).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+        }
+        return file.absolutePath
+    }
+
+    private fun getOutputNames(net: Net): List<String> {
+        val names = mutableListOf<String>()
+        val outLayers = net.unconnectedOutLayers
+        val layersNames = net.layerNames
+        for (i in 0 until outLayers.total().toInt()) {
+            val idx = outLayers.get(i, 0)[0].toInt() - 1
+            names.add(layersNames[idx])
+        }
+        return names
+    }
+
+    fun processFrameYOLO() {
+        val originalBitmap = textureView.bitmap ?: return
+        val mat = Mat()
+        Utils.bitmapToMat(originalBitmap, mat)
+
+        if (mat.channels() == 4) {
+            Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGRA2BGR)
+        }
+
+        val blob = Dnn.blobFromImage(mat, 1.0 / 255.0, Size(416.0, 416.0), Scalar(0.0, 0.0, 0.0), true, false)
+        yoloNet.setInput(blob)
+        val outNames = getOutputNames(yoloNet)
+        val outputs = ArrayList<Mat>()
+        yoloNet.forward(outputs, outNames)
+
+        val cols = mat.cols().toDouble()
+        val rows = mat.rows().toDouble()
+
+        for (output in outputs) {
+            for (i in 0 until output.rows()) {
+                val data = FloatArray(output.cols())
+                output.get(i, 0, data)
+                val confidence = data[4]
+                if (confidence > confThreshold) {
+                    val classScores = data.sliceArray(5 until data.size)
+                    val maxScore = classScores.maxOrNull() ?: 0f
+                    if (maxScore > confThreshold) {
+                        val centerX = data[0] * cols
+                        val centerY = data[1] * rows
+                        val width = data[2] * cols
+                        val height = data[3] * rows
+                        val left = centerX - width / 2
+                        val top = centerY - height / 2
+
+                        Imgproc.rectangle(mat, Point(left, top), Point(left + width, top + height), Scalar(0.0, 255.0, 0.0), 2)
+
+                        val text = if (receivedDistance > 0f) {
+                            val realWidth = (width / cols) * (receivedDistance * sensorWidth / focalLength) * 100.0
+                            val realHeight = (height / rows) * (receivedDistance * sensorHeight / focalLength) * 100.0
+                            "W: ${realWidth.toInt()} cm, H: ${realHeight.toInt()} cm"
+                        } else {
+                            "W: ${width.toInt()}, H: ${height.toInt()}"
+                        }
+                        Imgproc.putText(mat, text, Point(left, top - 5), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0.0, 255.0, 0.0), 2)
+                    }
+                }
+            }
+        }
+
+        val resultBitmap = Bitmap.createBitmap(mat.cols(), mat.rows(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(mat, resultBitmap)
+        runOnUiThread {
+            imageView.setImageBitmap(resultBitmap)
+        }
     }
 }

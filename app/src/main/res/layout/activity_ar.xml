@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <fragment
+        android:id="@+id/arFragment"
+        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/distance"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="opencv"
+        android:textColor="#FFFF"
+        android:backgroundTint="#8799FE"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp"
+        app:strokeColor="@color/gray"
+        app:strokeWidth="0dp"
+        app:iconTint="#FFFF"
+        app:icon="@drawable/arrow_right_thick"
+        app:iconGravity="start"
+
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        />
+
+
+
+</RelativeLayout>

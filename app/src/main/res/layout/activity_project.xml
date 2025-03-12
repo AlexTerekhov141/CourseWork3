@@ -1,5 +1,24 @@
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
+    tools:context=".MainActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:title="Project"
+        app:navigationIcon="@drawable/arrow_left_thick" />
+    </com.google.android.material.appbar.AppBarLayout>
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,36 +31,44 @@
         android:layout_height="wrap_content"
         android:hint="@string/ProjectName" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/createProjectButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:paddingLeft="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingRight="30dp"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/CreateProject"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/button_color"
+        android:layout_marginTop="8dp"
+        android:textColor="#FFFF"
+        android:backgroundTint="#8799FE"
+        android:textAllCaps="false"
+        app:strokeColor="@color/gray"
+        app:strokeWidth="0dp"
+        app:iconTint="#FFFF"
+        app:icon="@drawable/ic_create"
+        app:iconGravity="start"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/selectExistingProjectButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:paddingLeft="12dp"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:paddingRight="30dp"
-        android:drawableEnd="@drawable/ic_create"
-        android:layout_marginTop="16dp"
-        android:elevation="6dp" />
-    <Button
-        android:id="@+id/selectExistingProjectButton"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/ChooseExisting"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/button_color"
-        android:paddingLeft="12dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:paddingRight="30dp"
-        android:drawableEnd="@drawable/ic_check"
-        android:layout_marginTop="16dp"
-        android:elevation="6dp" />
+        android:layout_marginTop="8dp"
+        android:textColor="#FFFF"
+        android:backgroundTint="#8799FE"
+        android:textAllCaps="false"
+        app:strokeColor="@color/gray"
+        app:strokeWidth="0dp"
+        app:iconTint="#FFFF"
+        app:icon="@drawable/ic_check"
+        app:iconGravity="start"/>
+
 </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

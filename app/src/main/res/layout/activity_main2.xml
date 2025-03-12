@@ -1,0 +1,79 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <TextView
+        android:id="@+id/photoCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0/30"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:layout_margin="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_margin="30dp"
+        android:padding="8dp"
+        android:elevation="8dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/captureButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/white"
+            android:text="Photo"
+            android:backgroundTint="#8799FE"
+            android:drawableEnd="@drawable/ic_photo"
+            android:gravity="center"
+            android:layout_margin="8dp"
+            android:elevation="6dp"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/uploadButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/white"
+            android:backgroundTint="#8799FE"
+            android:drawableEnd="@drawable/ic_storage"
+            android:gravity="center"
+            android:layout_margin="8dp"
+            android:elevation="6dp"
+            />
+
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/action_settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="Settings"
+        />
+
+</RelativeLayout>

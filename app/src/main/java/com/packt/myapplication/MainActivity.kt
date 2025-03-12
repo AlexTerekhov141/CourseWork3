@@ -31,8 +31,21 @@ import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import android.media.ExifInterface
+import android.view.View
+import androidx.camera.camera2.Camera2Config
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.core.content.ContextCompat
+
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var previewView: PreviewView
+    private var imageCapture: ImageCapture? = null
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var arFragment: ArFragment
     private lateinit var resetButton: Button
@@ -48,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //startCamera()
         sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
         arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
         resetButton = findViewById(R.id.resetButton)
@@ -76,10 +90,11 @@ class MainActivity : AppCompatActivity() {
         }
         captureButton.setOnClickListener {
             captureScreenshot()
+            //takePhoto()
         }
-        if (!isOnboardingShown()) {
-            showOnboarding(resetButton, captureButton, clearLastButton)
-        }
+
+        showOnboarding(resetButton, captureButton, clearLastButton)
+
     }
     private fun isOnboardingShown(): Boolean {
         val sharedPrefs = getSharedPreferences("onboarding_prefs", MODE_PRIVATE)
@@ -520,20 +535,98 @@ class MainActivity : AppCompatActivity() {
         if (!projectFolder.exists()) {
             projectFolder.mkdirs()
         }
-
-        val filename = "AR_Screenshot_${System.currentTimeMillis()}.png"
-        val file = File(projectFolder, filename)
-
-        try {
-            FileOutputStream(file).use { outputStream ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                Toast.makeText(this,
-                    getString(R.string.PhotoSavedToast, file.absolutePath), Toast.LENGTH_SHORT).show()
+        val selectedTool = sharedPreferences.getString("selected_tool2", "png")
+        if(selectedTool == "png"){
+            val filename = "AR_Screenshot_${System.currentTimeMillis()}.png"
+            val file = File(projectFolder, filename)
+            try {
+                FileOutputStream(file).use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    Toast.makeText(this,
+                        getString(R.string.PhotoSavedToast, file.absolutePath), Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, getString(R.string.SavedPhotoError), Toast.LENGTH_SHORT).show()
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(this, getString(R.string.SavedPhotoError), Toast.LENGTH_SHORT).show()
+        }else if(selectedTool == "jpg"){
+            val filename = "AR_Screenshot_${System.currentTimeMillis()}.jpg"
+            val file = File(projectFolder, filename)
+            try {
+                FileOutputStream(file).use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                    Toast.makeText(this,
+                        getString(R.string.PhotoSavedToast, file.absolutePath), Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, getString(R.string.SavedPhotoError), Toast.LENGTH_SHORT).show()
+            }
+        }else if(selectedTool == "exif") {
+            val filename = "AR_Screenshot_${System.currentTimeMillis()}.jpg"
+            val file = File(projectFolder, filename)
+            val exifFile = File(projectFolder, "AR_Screenshot_${System.currentTimeMillis()}.exif")
+
+            try {
+                FileOutputStream(file).use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+
+                val exif = ExifInterface(file.absolutePath)
+
+                exifFile.writeText("Дата: ${exif.getAttribute(ExifInterface.TAG_DATETIME)}\n")
+                exifFile.appendText("Камера: ${exif.getAttribute(ExifInterface.TAG_MAKE)} ${exif.getAttribute(ExifInterface.TAG_MODEL)}\n")
+                exifFile.appendText("GPS: ${exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE)}, ${exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE)}\n")
+
+                Toast.makeText(this, getString(R.string.PhotoSavedToast, file.absolutePath), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "EXIF сохранен в ${exifFile.absolutePath}", Toast.LENGTH_SHORT).show()
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, getString(R.string.SavedPhotoError), Toast.LENGTH_SHORT).show()
+            }
         }
+
+    }
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(previewView.surfaceProvider)
+            }
+
+            imageCapture = ImageCapture.Builder().build()
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+            } catch (exc: Exception) {
+                Toast.makeText(this, "Ошибка камеры: ${exc.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun takePhoto() {
+        val photoFile = File(externalMediaDirs.first(), "photo_${System.currentTimeMillis()}.jpg")
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture?.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    Toast.makeText(this@MainActivity, "Фото сохранено: ${photoFile.absolutePath}", Toast.LENGTH_SHORT).show()
+                    previewView.visibility = View.GONE
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Toast.makeText(this@MainActivity, "Ошибка: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    previewView.visibility = View.GONE
+                }
+            })
     }
 
 }
