@@ -33,6 +33,13 @@
         <activity android:name=".ScannedProjectActivity" />
         <activity android:name=".OnboardingActivity" />
         <activity android:name=".ModelViewerActivity" />
+        <activity android:name=".StartActivity2" />
+        <activity android:name=".MainActivity2" />
+        <activity android:name=".ARActivity" />
+        <activity android:name=".Opencv2Activity" />
+        <activity android:name=".Project3dActivity" />
+        <activity android:name=".Project2Activity" />
+        <activity android:name=".ExistingProjectsActivity" />
         <meta-data android:name="com.google.ar.core" android:value="required" />
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -41,12 +48,17 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"
+            />
+            <meta-data
+                android:name="androidx.camera.defaultConfigProvider"
+                android:value="androidx.camera.camera2.Camera2Config"/>
         </provider>
 
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" />
     <uses-feature android:name="android.hardware.camera.ar" />
     <uses-feature
         android:name="android.hardware.camera"

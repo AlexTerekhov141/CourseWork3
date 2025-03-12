@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.MaterialToolbar
 import java.io.File
 
 class ProjectActivity : AppCompatActivity() {
@@ -20,7 +21,10 @@ class ProjectActivity : AppCompatActivity() {
         val projectNameInput = findViewById<EditText>(R.id.projectNameInput)
         val createButton = findViewById<Button>(R.id.createProjectButton)
         val selectExistingProject = findViewById<Button>(R.id.selectExistingProjectButton)
-
+        val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
+        topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         createButton.setOnClickListener {
             val projectName = projectNameInput.text.toString().trim()
@@ -52,6 +56,8 @@ class ProjectActivity : AppCompatActivity() {
         if (!projectFolder.exists()) {
             projectFolder.mkdirs()
         }
+        val sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        sharedPreferences.edit().putString("last_project", projectName).apply()
         return projectFolder.absolutePath
     }
 
@@ -71,6 +77,8 @@ class ProjectActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("projectName", selectedProject.name)
             intent.putExtra("projectPath", selectedProject.absolutePath)
+            val sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+            sharedPreferences.edit().putString("last_project", selectedProject.name).apply()
             startActivity(intent)
         }
 

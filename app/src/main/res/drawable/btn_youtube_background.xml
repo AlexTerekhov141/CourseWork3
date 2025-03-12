@@ -1,0 +1,13 @@
+<!-- res/drawable/btn_youtube_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/white" />
+    <corners android:radius="6dp" />
+    <stroke
+        android:color="@android:color/darker_gray"
+        android:width="1px" />
+    <padding
+        android:left="16dp"
+        android:top="12dp"
+        android:right="16dp"
+        android:bottom="12dp" />
+</shape>

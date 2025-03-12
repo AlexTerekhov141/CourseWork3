@@ -69,5 +69,31 @@
             android:layout_height="wrap_content"
             android:text="Inches" />
     </RadioGroup>
+    <TextView
+        android:id="@+id/filechoose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Файл"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text_color"
+        android:fontFamily="sans-serif-light"
+        android:textAlignment="center" />
+    <RadioGroup
+        android:id="@+id/tools_radio_file"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/tool_png"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="png" />
+        <RadioButton
+            android:id="@+id/tool_jpg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="jpg" />
+
+    </RadioGroup>
 
 </LinearLayout>

@@ -56,7 +56,27 @@ class SettingsActivity : AppCompatActivity() {
             }
             editor.apply()
         }
+        val toolsRadioGroup2 = findViewById<RadioGroup>(R.id.tools_radio_file)
+
+
+        val selectedTool2 = sharedPreferences.getString("selected_tool2", "jpg")
+        when (selectedTool2) {
+            "png" -> toolsRadioGroup.check(R.id.tool_png)
+            "jpg" -> toolsRadioGroup.check(R.id.tool_jpg)
+        }
+
+
+        toolsRadioGroup2.setOnCheckedChangeListener { _, checkedId ->
+            val editor = sharedPreferences.edit()
+            when (checkedId) {
+                R.id.tool_jpg -> editor.putString("selected_tool2", "jpg")
+                R.id.tool_png -> editor.putString("selected_tool2", "png")
+            }
+            editor.apply()
+        }
+
     }
+
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
