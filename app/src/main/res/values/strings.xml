@@ -44,13 +44,13 @@
     <string name="UploadSuccessToast">Успешно загружено: %1$s.</string>
     <string name="CreateObjFailedToast">Failed to create object on server.</string>
     <string name="CreateObjSuccessToast">Successfully created object on server.</string>
-    <string name="onboarding_title_1">ArMeurr - Умный инструмент для измерений\n</string>
-    <string name="onboarding_description_1"> Измеряйте длину, площадь и углы с высокой точностью\n</string>
+    <string name="onboarding_title_1">ArMeur - Smart Measuring Tool\n</string>
+    <string name="onboarding_description_1">Measure length, area and angles with high accuracy\n</string>
     <string name="next">Next\n</string>
     <string name="onboarding_title_2">Create an impressive photos and publish it</string>
-    <string name="onboarding_description_2">Сохраняйте результаты, добавляйте фотографии и делитесь ими</string>
-    <string name="onboarding_description_3">идеальный инструмент для строителей, дизайнеров и инженеров.</string>
-    <string name="onboarding_title_3">Инструмент для любителей и професионалов</string>
+    <string name="onboarding_description_2">Save your results, add photos and share them</string>
+    <string name="onboarding_description_3">the perfect tool for builders, designers and engineers</string>
+    <string name="onboarding_title_3">A tool for amateurs and professionals</string>
     <string name="skip">skip</string>
 
 </resources>

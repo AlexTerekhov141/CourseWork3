@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/calibrateButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -158,7 +159,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="16dp"
-            android:layout_marginLeft="66dp">
+            >
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnShare"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -185,9 +186,42 @@
                 app:iconTint="@color/white"
                 app:icon="@drawable/ic_clear"
                 app:iconSize="24dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ScaleUp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="57dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/white"
+                android:backgroundTint="#8799FE"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                app:iconTint="@color/white"
+                app:icon="@drawable/plus"
+                app:iconSize="24dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ScaleDown"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="57dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/white"
+                android:backgroundTint="#8799FE"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                app:iconTint="@color/white"
+                app:icon="@drawable/minus"
+                app:iconSize="24dp"/>
 
         </LinearLayout>
 
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </FrameLayout>

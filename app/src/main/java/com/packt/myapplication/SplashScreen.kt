@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.packt.myapplication.activities.OnboardingActivity
 
 @Suppress("DEPRECATION")
 class SplashScreen : AppCompatActivity() {

@@ -23,23 +23,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".StartActivity" />
-        <activity android:name=".OpenCVAcitivity" />
-        <activity android:name=".PhotoGalleryActivity" />
-        <activity android:name=".ProjectActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".ScannerActivity" />
-        <activity android:name=".ScannedProjectActivity" />
-        <activity android:name=".OnboardingActivity" />
-        <activity android:name=".ModelViewerActivity" />
-        <activity android:name=".StartActivity2" />
-        <activity android:name=".MainActivity2" />
-        <activity android:name=".ARActivity" />
-        <activity android:name=".Opencv2Activity" />
-        <activity android:name=".Project3dActivity" />
-        <activity android:name=".Project2Activity" />
-        <activity android:name=".ExistingProjectsActivity" />
+        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.StartActivity" />
+        <activity android:name=".activities.OpenCVAcitivity" />
+        <activity android:name=".activities.PhotoGalleryActivity" />
+        <activity android:name=".activities.ProjectActivity" />
+        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.ScannerActivity" />
+        <activity android:name=".activities.ScannedProjectActivity" />
+        <activity android:name=".activities.OnboardingActivity" />
+        <activity android:name=".activities.ModelViewerActivity" />
+        <activity android:name=".activities.StartActivity2" />
+        <activity android:name=".activities.MainActivity2" />
+        <activity android:name=".activities.ARActivity" />
+        <activity android:name=".activities.Opencv2Activity" />
+        <activity android:name=".activities.Project3dActivity" />
+        <activity android:name=".activities.Project2Activity" />
+        <activity android:name=".activities.ExistingProjectsActivity" />
         <meta-data android:name="com.google.ar.core" android:value="required" />
         <provider
             android:name="androidx.core.content.FileProvider"
